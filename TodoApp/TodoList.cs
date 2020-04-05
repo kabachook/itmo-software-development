@@ -44,6 +44,22 @@ namespace TodoApp
         }
 
         /// <summary>
+        /// Mark task as doing
+        /// </summary>
+        /// <param name="idx">Index of task in list</param>
+        /// <exception cref="System.ArgumentOutOfRangeException">
+        /// Thrown when index is not in the list
+        /// </exception>
+        public void MarkDoing(int idx)
+        {
+            if (idx >= TaskList.Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(idx), idx, "Index out of range");
+            }
+            TaskList[idx].MarkDoing();
+        }
+
+        /// <summary>
         /// Mark task as idle
         /// </summary>
         /// <param name="idx">Index of task in list</param>
@@ -79,9 +95,9 @@ namespace TodoApp
             {
                 
                 case TaskStatus.Idle:
-                    task.MarkDone();
+                    task.MarkDoing();
                     break;
-                case TaskStatus.Done:
+                case TaskStatus.Doing:
                     task.MarkIdle();
                     break;
             }
