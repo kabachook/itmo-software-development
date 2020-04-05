@@ -191,7 +191,7 @@ namespace TodoApp
             for (int i = filledCells; i < CellsCount; i++){
                 builder.Append(EmptyCell);
             }
-            builder.Append("] ").Append(percentDone*100).Append(" %");
+            builder.Append("] ").Append($"{percentDone*100:.##}").Append(" %");
 
             return builder.ToString();
         }
