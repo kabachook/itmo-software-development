@@ -76,34 +76,88 @@ namespace TodoApp
         {
             var builder = new StringBuilder();
 
-            foreach(var (idx, task) in _todoList.TaskList.Select((Value, Index) => (Index, Value))){
-                builder.Append($"{idx}. {task.Name} - {task.Status}");
+            foreach (var (idx, task) in _todoList.TaskList.Select((Value, Index) => (Index, Value)))
+            {
+                builder.Append($"{idx}. {task.Name}, status: {task.Status}, elapsed: {task.ElapsedTime}");
             }
 
             return builder.ToString();
         }
     }
 
-    class ToggleCommand : ICommand {
-        public string Help => "Toggle task (done/idle)";
+    class ToggleCommand : ICommand
+    {
+        public string Help => "Toggle task (idle/doing)";
         public string Usage => "index";
 
         private TodoList _todoList;
 
-        public ToggleCommand(TodoList todoList){
+        public ToggleCommand(TodoList todoList)
+        {
             this._todoList = todoList;
         }
 
-        public string Invoke(IList<string> args = default(List<string>)){
+        public string Invoke(IList<string> args = default(List<string>))
+        {
             int idx;
             if (!int.TryParse(args[0], out idx))
             {
                 throw new ArgumentException("Index is not valid!");
             }
-            
+
             this._todoList.Toggle(idx);
             return "Toggled!";
         }
 
+    }
+
+    class DoneCommand : ICommand
+    {
+        public string Help => "Mark task done";
+        public string Usage => "index";
+
+        private TodoList _todoList;
+
+        public DoneCommand(TodoList todoList)
+        {
+            this._todoList = todoList;
+        }
+
+        public string Invoke(IList<string> args = default(List<string>))
+        {
+            int idx;
+            if (!int.TryParse(args[0], out idx))
+            {
+                throw new ArgumentException("Index is not valid!");
+            }
+
+            this._todoList.MarkDone(idx);
+            return "ok";
+        }
+    }
+
+    class IdleCommand : ICommand
+    {
+        public string Help => "Mark task idle";
+        public string Usage => "index";
+
+        private TodoList _todoList;
+
+        public IdleCommand(TodoList todoList)
+        {
+            this._todoList = todoList;
+        }
+
+        public string Invoke(IList<string> args = default(List<string>))
+        {
+            int idx;
+            if (!int.TryParse(args[0], out idx))
+            {
+                throw new ArgumentException("Index is not valid!");
+            }
+
+            this._todoList.MarkIdle(idx);
+            return "ok";
+        }
     }
 }
