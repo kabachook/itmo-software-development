@@ -1,0 +1,109 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Linq;
+
+namespace TodoApp
+{
+    class HelpCommand : ICommand
+    {
+        public string Help => "List available commands";
+        public string Usage => "";
+        private Dictionary<string, ICommand> _commands;
+        public HelpCommand(Dictionary<string, ICommand> commands)
+        {
+            this._commands = commands;
+        }
+        public string Invoke(IList<string> args = default(List<string>))
+        {
+            var builder = new StringBuilder();
+            foreach (var (name, cmd) in _commands)
+            {
+                builder.Append($"/{name} {cmd.Usage} — {cmd.Help}\n");
+            }
+            return builder.ToString();
+        }
+    }
+
+    class NewTaskCommand : ICommand
+    {
+        public string Help => "New task";
+        public string Usage => "name";
+        private TodoList _todoList;
+        public NewTaskCommand(TodoList todoList)
+        {
+            this._todoList = todoList;
+        }
+        public string Invoke(IList<string> args = default(List<string>))
+        {
+            _todoList.Add(new Task(args[0]));
+            return "Added!";
+        }
+    }
+
+    class RemoveTaskCommand : ICommand
+    {
+        public string Help => "Remove task";
+        public string Usage => "index";
+        private TodoList _todoList;
+        public RemoveTaskCommand(TodoList todoList)
+        {
+            this._todoList = todoList;
+        }
+        public string Invoke(IList<string> args = default(List<string>))
+        {
+            int idx;
+            if (!int.TryParse(args[0], out idx))
+            {
+                throw new ArgumentException("Index is not valid!");
+            }
+
+            _todoList.Remove(idx);
+            return "Removed!";
+        }
+    }
+
+    class ListTasksCommand : ICommand
+    {
+        public string Help => "List tasks";
+        public string Usage => "";
+        private TodoList _todoList;
+        public ListTasksCommand(TodoList todoList)
+        {
+            this._todoList = todoList;
+        }
+        public string Invoke(IList<string> args = default(List<string>))
+        {
+            var builder = new StringBuilder();
+
+            foreach(var (idx, task) in _todoList.TaskList.Select((Value, Index) => (Index, Value))){
+                builder.Append($"{idx}. {task.Name} - {task.Status}");
+            }
+
+            return builder.ToString();
+        }
+    }
+
+    class ToggleCommand : ICommand {
+        public string Help => "Toggle task (done/idle)";
+        public string Usage => "index";
+
+        private TodoList _todoList;
+
+        public ToggleCommand(TodoList todoList){
+            this._todoList = todoList;
+        }
+
+        public string Invoke(IList<string> args = default(List<string>)){
+            int idx;
+            if (!int.TryParse(args[0], out idx))
+            {
+                throw new ArgumentException("Index is not valid!");
+            }
+            
+            this._todoList.Toggle(idx);
+            return "Toggled!";
+        }
+
+    }
+}
