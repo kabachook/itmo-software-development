@@ -160,4 +160,40 @@ namespace TodoApp
             return "ok";
         }
     }
+
+    class ProgressCommand : ICommand {
+        public static int CellsCount = 10;
+        public static char FilledCell = '#';
+        public static char EmptyCell = '_';
+        public string Help => "See your progress";
+        public string Usage => "";
+
+        private TodoList _todoList;
+
+        public ProgressCommand(TodoList todoList)
+        {
+            this._todoList = todoList;
+        }
+
+        public string Invoke(IList<string> args = default(List<string>))
+        {
+            var builder = new StringBuilder();
+
+            int countDone = _todoList.TaskList.Count(t => t.Status == TaskStatus.Done);
+            int countAll = _todoList.TaskList.Count();
+            double percentDone = (double)countDone / (double)countAll;
+            int filledCells = (int)Math.Round(percentDone*CellsCount);
+
+            builder.Append("[");
+            for (int i = 0; i < filledCells; i++){
+                builder.Append(FilledCell);
+            }
+            for (int i = filledCells; i < CellsCount; i++){
+                builder.Append(EmptyCell);
+            }
+            builder.Append("] ").Append(percentDone*100).Append(" %");
+
+            return builder.ToString();
+        }
+    }
 }
