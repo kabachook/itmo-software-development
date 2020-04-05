@@ -67,11 +67,13 @@ namespace TodoApp.Tests
             }
             
             [Fact]
-            public void Toggle_StatusIsDone(){
-                _todoList.MarkDone(0);
-                Assert.Equal(TaskStatus.Done, _todoList.TaskList[0].Status);
+            public void Toggle_StatusChanges(){
+                _todoList.Toggle(0);
+                Assert.Equal(TaskStatus.Doing, _todoList.TaskList[0].Status);
+                _todoList.Toggle(0);
+                Assert.Equal(TaskStatus.Idle, _todoList.TaskList[0].Status);
             }
-
+            
             [Fact]
             public void Remove_Empty(){
                 _todoList.Remove(0);

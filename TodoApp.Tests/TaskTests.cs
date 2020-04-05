@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using Xunit;
 
 namespace TodoApp.Tests
@@ -27,6 +28,16 @@ namespace TodoApp.Tests
             this.task.MarkDone();
             this.task.MarkIdle();
             Assert.Equal(TaskStatus.Idle, this.task.Status);
+        }
+
+        [Fact]
+        public void MarkDoing_ElapsedTime(){
+            int sleepPeriod = 1000;
+            int eps = (int)(sleepPeriod * 0.1f);
+            this.task.MarkDoing();
+            Thread.Sleep(1000);
+            this.task.MarkIdle();
+            Assert.InRange(this.task.ElapsedTime, TimeSpan.FromMilliseconds(sleepPeriod - eps), TimeSpan.FromMilliseconds(sleepPeriod + eps));
         }
     }
 }

@@ -21,8 +21,15 @@ namespace TodoApp
             RegisterCommand("list", new ListTasksCommand(_todoList));
             RegisterCommand("new", new NewTaskCommand(_todoList));
             RegisterCommand("remove", new RemoveTaskCommand(_todoList));
+            RegisterCommand("idle", new IdleCommand(_todoList));
+            RegisterCommand("done", new DoneCommand(_todoList));
             RegisterCommand("toggle", new ToggleCommand(_todoList));
             RegisterCommand("help", new HelpCommand(_commands));
+
+            Console.CancelKeyPress += delegate (object sender, ConsoleCancelEventArgs e) {
+                _exit = true;
+                // Environment.Exit(0);
+            };
         }
 
         /// <summary>
@@ -71,12 +78,14 @@ namespace TodoApp
         public void Start()
         {
             Print("Welcome to ToDo app! Type /help to get program info.");
+            PrintPrompt();
             while (!_exit)
             {
-                PrintPrompt();
                 try
                 {
-                    var args = Console.ReadLine().Split(" ");
+                    var line = Console.ReadLine();
+                    if (line == null) continue;
+                    var args = line.Split(" ");
                     if (args.Length < 1 || !args[0].StartsWith('/')) continue;
 
                     var cmd = args[0].Substring(1);
@@ -94,6 +103,7 @@ namespace TodoApp
                 {
                     PrintError(e.Message);
                 }
+                PrintPrompt();
             }
         }
     }
