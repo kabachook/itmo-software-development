@@ -24,6 +24,7 @@ namespace TodoApp
             RegisterCommand("idle", new IdleCommand(_todoList));
             RegisterCommand("done", new DoneCommand(_todoList));
             RegisterCommand("toggle", new ToggleCommand(_todoList));
+            RegisterCommand("progress", new ProgressCommand(_todoList));
             RegisterCommand("help", new HelpCommand(_commands));
 
             Console.CancelKeyPress += delegate (object sender, ConsoleCancelEventArgs e) {
