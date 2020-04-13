@@ -1,0 +1,6 @@
+[submodule "deps/xunit"]
+	path = deps/xunit
+	url = https://github.com/xunit/xunit
+[submodule "deps/Newtonsoft.Json"]
+	path = deps/Newtonsoft.Json
+	url = https://github.com/JamesNK/Newtonsoft.Json
