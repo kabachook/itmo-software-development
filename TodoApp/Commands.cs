@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.IO;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace TodoApp
 {
@@ -194,6 +196,52 @@ namespace TodoApp
             builder.Append("] ").Append($"{percentDone*100:.##}").Append(" %");
 
             return builder.ToString();
+        }
+    }
+
+    class SaveCommand : ICommand {
+        public string Help => "Save tasks to file";
+        public string Usage => "filename";
+
+        private TodoList _todoList;
+
+        public SaveCommand(TodoList todoList)
+        {
+            this._todoList = todoList;
+        }
+
+        public string Invoke(IList<string> args = default(List<string>))
+        {
+            string json = _todoList.Serialize();
+            using (var writer = new StreamWriter(args[0])){
+                writer.Write(json);
+            }
+            return json;
+        }
+    }
+
+    class LoadCommand : ICommand {
+        public string Help => "Load tasks from file";
+        public string Usage => "filename";
+
+        private TodoList _todoList;
+
+        public LoadCommand(TodoList todoList)
+        {
+            this._todoList = todoList;
+        }
+
+        public string Invoke(IList<string> args = default(List<string>))
+        {
+            string json;
+            using (var reader = new StreamReader(args[0])){
+                json = reader.ReadToEnd();
+            }
+
+            List<Task> tasks = JsonConvert.DeserializeObject<List<Task>>(json);
+            _todoList.TaskList.AddRange(tasks);
+
+            return "ok";
         }
     }
 }
