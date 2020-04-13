@@ -78,7 +78,7 @@ namespace TodoApp
 
             foreach (var (idx, task) in _todoList.TaskList.Select((Value, Index) => (Index, Value)))
             {
-                builder.Append($"{idx}. {task.Name}, status: {task.Status}, elapsed: {task.ElapsedTime}");
+                builder.Append($"{idx}. {task.Name}, status: {task.Status}, elapsed: {task.ElapsedTime}\n");
             }
 
             return builder.ToString();
