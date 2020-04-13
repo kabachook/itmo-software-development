@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace TodoApp
 {
@@ -199,7 +200,7 @@ namespace TodoApp
     }
 
     class SaveCommand : ICommand {
-        public string Help => "Save to file";
+        public string Help => "Save tasks to file";
         public string Usage => "filename";
 
         private TodoList _todoList;
@@ -216,6 +217,31 @@ namespace TodoApp
                 writer.Write(json);
             }
             return json;
+        }
+    }
+
+    class LoadCommand : ICommand {
+        public string Help => "Load tasks from file";
+        public string Usage => "filename";
+
+        private TodoList _todoList;
+
+        public LoadCommand(TodoList todoList)
+        {
+            this._todoList = todoList;
+        }
+
+        public string Invoke(IList<string> args = default(List<string>))
+        {
+            string json;
+            using (var reader = new StreamReader(args[0])){
+                json = reader.ReadToEnd();
+            }
+
+            List<Task> tasks = JsonConvert.DeserializeObject<List<Task>>(json);
+            _todoList.TaskList.AddRange(tasks);
+
+            return "ok";
         }
     }
 }
