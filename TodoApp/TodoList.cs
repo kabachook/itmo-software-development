@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace TodoApp
 {
@@ -118,6 +119,10 @@ namespace TodoApp
                 throw new ArgumentOutOfRangeException(nameof(idx), idx, "Index out of range");
             }
             TaskList.RemoveAt(idx);
+        }
+
+        public string Serialize(){
+            return JsonConvert.SerializeObject(this.TaskList, Formatting.Indented);
         }
     }
 }
